@@ -26,9 +26,7 @@ pipeline {
   post {
     always {
       echo 'Auto tagging images'
-      sh 'docker tag beyghakymyar/chatbot:$BUILD_NUMBER beyghakymyar/chatbot:latest'
-      sh 'docker push beyghakymyar/chatbot:$BUILD_NUMBER'
-      sh 'docker push beyghakymyar/chatbot:latest'
+      sh 'docker tag beyghakymyar/chatbot:$BUILD_NUMBER'
     }
   }
 }
