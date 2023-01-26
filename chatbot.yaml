@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatbot-deployment
+  labels:
+    app: beyghakymyar/chatbot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: beyghakymyar/chatbot
+  template:
+    metadata:
+      labels:
+        app: beyghakymyar/chatbot
+    spec:
+      containers:
+      - name: beyghakymyar/chatbot
+        image: beyghakymyar/chatbot:latest
+        ports:
+        - containerPort: 3001
+       
