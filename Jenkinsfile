@@ -1,23 +1,34 @@
-node {
-    def tag
+pipeline {
+  agent any
+ 
+  stages {
     stage('Build') {
-        // build react app
-        sh 'npm install && npm run build'
+      steps {
+        echo 'Building React Project'
+        sh 'npm install'
+        sh 'npm run build'
+      }
     }
     stage('Dockerize') {
-        // assign tag as env variable
-        tag = env.BUILD_ID
-        // build docker image
-        sh "docker build -t react-app:$tag ."
+      steps {
+        echo 'Dockerize React Application'
+        sh 'docker build --rm -f Dockerfile -t beyghakymyar/chatbot:$BUILD_NUMBER .'
+      }
     }
-    stage('Push to registry') {
-        // push docker image to registry
-        sh "docker push react-app:$tag"
+    stage('Deployment') {
+      steps {
+        echo 'Deploying React Application to Minikube'
+        sh 'kubectl apply -f deployment.yml'
+        sh 'kubectl expose deployment <app-name> --type=NodePort --port=8080'
+      }
     }
-    stage("Deploy") {
-            steps {
-                sh "sudo -S rm -rf /var/www/openai-chatbot"
-                sh "sudo cp -r ${WORKSPACE}/build/ /var/www/openai-chatbot/"
-            }
-        }
+  }
+  post {
+    always {
+      echo 'Auto tagging images'
+      sh 'docker tag beyghakymyar/chatbot:$BUILD_NUMBER beyghakymyar/chatbot:latest'
+      sh 'docker push beyghakymyar/chatbot:$BUILD_NUMBER'
+      sh 'docker push beyghakymyar/chatbot:latest'
+    }
+  }
 }
