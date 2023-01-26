@@ -18,8 +18,8 @@ pipeline {
     stage('Deployment') {
       steps {
         echo 'Deploying React Application to Minikube'
-        sh 'kubectl apply -f deployment.yml'
-        sh 'kubectl expose deployment <app-name> --type=NodePort --port=8080'
+        sh 'kubectl apply -f chatbot.yml'
+        sh 'kubectl expose deployment beyghakymyar/chatbot:$BUILD_NUMBER --type=NodePort --port=3004'
       }
     }
   }
