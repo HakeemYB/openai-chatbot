@@ -2,7 +2,7 @@ FROM node:19.3.0
 
 WORKDIR /openai-app
 
-COPY package.json ./
+COPY package*.json ./
 
 RUN npm install
 
