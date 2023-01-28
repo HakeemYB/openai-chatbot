@@ -9,9 +9,12 @@ pipeline {
         sh 'npm run build'
       }
     }
+ 
     stage('Dockerize') {
       steps {
         echo 'Dockerize React Application'
+        def buildTag = BUILD_TAG.split("-")
+        sh 'docker tag chatbot docker.io/beyghakymyar/chatbot:${buildTag[0]}-${buildTag[1]}'
         sh 'docker build --rm -f Dockerfile -t beyghakymyar/chatbot:$BUILD_NUMBER .'
       }
     }
@@ -19,14 +22,8 @@ pipeline {
       steps {
         echo 'Deploying React Application to Minikube'
         sh 'kubectl apply -f chatbot.yml'
-        sh 'kubectl expose deployment beyghakymyar/chatbot:$BUILD_NUMBER --type=NodePort --port=3004'
+        sh 'kubectl expose deployment beyghakymyar/chatbot:$BUILD_NUMBER --type=NodePort --port=30000'
       }
-    }
-  }
-  post {
-    always {
-      echo 'Auto tagging images'
-      sh 'docker tag beyghakymyar/chatbot:$BUILD_NUMBER'
     }
   }
 }

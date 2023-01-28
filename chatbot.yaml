@@ -3,20 +3,39 @@ kind: Deployment
 metadata:
   name: chatbot-deployment
   labels:
-    app: beyghakymyar/chatbot
+    app: beyghakymyar-chatbot
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: beyghakymyar/chatbot
+      app: beyghakymyar-chatbot
   template:
     metadata:
       labels:
-        app: beyghakymyar/chatbot
+        app: beyghakymyar-chatbot
     spec:
       containers:
-      - name: beyghakymyar/chatbot
-        image: beyghakymyar/chatbot:$BUILD_NUMBER
+      - name: beyghakymyar-chatbot
+        image: docker.io/beyghakymyar/chatbot:latest
+        imagePullPolicy: Always
         ports:
-        - containerPort: 3001
-       
+        - containerPort: 3000
+        command: [ "npm", "start" ]
+      imagePullSecrets:
+        - name: myregistrykey
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chatbot-service
+spec:
+  selector:
+    app: beyghakymyar-chatbot
+  type: LoadBalancer  
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 30000
+

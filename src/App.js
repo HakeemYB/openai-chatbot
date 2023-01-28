@@ -18,7 +18,7 @@ const handleClick = async () => {
     const response = await openai.createCompletion({
       model: "text-davinci-003",
       prompt: prompt,
-      temperature: 0.5,
+      temperature: 0.7,
       max_tokens: 300,
     });
     setResult
@@ -39,6 +39,7 @@ return (
         onChange={(e) => setPrompt(e.target.value)}
         placeholder="Don't act smart, Think smart..."
         className="textarea"
+        required
         ></textarea>
 
         <button
@@ -49,7 +50,7 @@ return (
           {loading ? "Thinking...": "Generate"}
         </button>
 
-        <pre className="result"><p>{result}</p></pre>
+        <pre className="result">{result}</pre>
     </div>
   </main>
 );
